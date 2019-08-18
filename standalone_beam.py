@@ -90,7 +90,7 @@ def beam_model(h, E, L, b, num_elements):
     K_local = np.zeros((num_elements, 4, 4))
     for ind in range(num_elements):
         K_local[ind, :, :] = mtx[ind, :, :, ind] * I[ind]
-        
+
     # comp = StatesComp(num_elements=num_elements, force_vector=force_vector)
     force_vector = np.concatenate([force_vector, np.zeros(2)])
 
@@ -103,24 +103,24 @@ def beam_model(h, E, L, b, num_elements):
 
     # comp = ComplianceComp(num_elements=num_elements, force_vector=force_vector)
     compliance = np.dot(force_vector, displacements)
-    
+
     return compliance
 
     # self.add_design_var('inputs_comp.h', lower=1e-2, upper=10.)
     # self.add_objective('compliance_comp.compliance')
-    
+
 def volume_function(h, L, b, num_elements, req_volume):
     L0 = L / num_elements
 
     volume_diff = req_volume - np.sum(h * b * L0)
-    
+
     return volume_diff
 
-num_elements=5
-E=1.
-L=1.
-b=0.1
-volume=0.01
+num_elements = 15
+E = 1.
+L = 1.
+b = 0.1
+volume = 0.01
 h = np.ones((num_elements)) * 1.0
 
 constraint_dict = {
@@ -132,4 +132,5 @@ constraint_dict = {
 bounds = Bounds(0.01, 10.)
 result = minimize(beam_model, h, tol=1e-9, bounds=bounds, args=(E, L, b, num_elements), constraints=constraint_dict)
 
+print('Optimal element height distribution:')
 print(result.x)

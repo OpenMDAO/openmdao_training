@@ -12,7 +12,7 @@ L = 1.
 b = 0.1
 volume = 0.01
 
-num_elements = 50
+num_elements = 5
 
 prob = om.Problem(model=BeamGroup(E=E, L=L, b=b, volume=volume, num_elements=num_elements))
 
@@ -23,6 +23,11 @@ prob.driver.options['disp'] = True
 
 prob.setup(force_alloc_complex=False)
 
+prob['inputs_comp.h'][:] = 1.0
+
+
 prob.run_driver()
+
+prob.model.list_outputs(print_arrays=True)
 
 print(prob['inputs_comp.h'])

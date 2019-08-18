@@ -3,7 +3,8 @@ from __future__ import print_function, division, absolute_import
 import numpy as np
 from scipy.sparse import coo_matrix
 from scipy.sparse.linalg import splu
-from scipy.optimize import minimize
+from scipy.optimize import minimize, Bounds
+from icecream import ic
 
 
 def assemble_CSC_K(K_local):
@@ -64,7 +65,7 @@ def assemble_CSC_K(K_local):
 
 
 
-def beam_model(h, E=1., L=1., b=0.1, num_elements=50):
+def beam_model(h, E, L, b, num_elements):
     num_nodes = num_elements + 1
 
     force_vector = np.zeros(2 * num_nodes)
@@ -72,7 +73,6 @@ def beam_model(h, E=1., L=1., b=0.1, num_elements=50):
 
     # I_comp = MomentOfInertiaComp(num_elements=num_elements, b=b)
     I = 1./12. * b * h ** 3
-
 
     # comp = LocalStiffnessMatrixComp(num_elements=num_elements, E=E, L=L)
     L0 = L / num_elements
@@ -90,7 +90,7 @@ def beam_model(h, E=1., L=1., b=0.1, num_elements=50):
     K_local = np.zeros((num_elements, 4, 4))
     for ind in range(num_elements):
         K_local[ind, :, :] = mtx[ind, :, :, ind] * I[ind]
-
+        
     # comp = StatesComp(num_elements=num_elements, force_vector=force_vector)
     force_vector = np.concatenate([force_vector, np.zeros(2)])
 
@@ -99,7 +99,7 @@ def beam_model(h, E=1., L=1., b=0.1, num_elements=50):
 
     d = lu.solve(force_vector)
 
-    displacements = d[2 * num_nodes]
+    displacements = d[:]
 
     # comp = ComplianceComp(num_elements=num_elements, force_vector=force_vector)
     compliance = np.dot(force_vector, displacements)
@@ -109,25 +109,27 @@ def beam_model(h, E=1., L=1., b=0.1, num_elements=50):
     # self.add_design_var('inputs_comp.h', lower=1e-2, upper=10.)
     # self.add_objective('compliance_comp.compliance')
     
-def volume_function(h, L, b, num_elements):
+def volume_function(h, L, b, num_elements, req_volume):
     L0 = L / num_elements
 
-    volume = np.sum(h * b * L0)
+    volume_diff = req_volume - np.sum(h * b * L0)
+    
+    return volume_diff
 
-num_elements=50
+num_elements=5
 E=1.
 L=1.
 b=0.1
 volume=0.01
-num_elements=50
-h0 = np.ones((num_elements))
+h = np.ones((num_elements)) * 1.0
 
 constraint_dict = {
     'type' : 'eq',
     'fun' : volume_function,
-    'args' : [h, L, b, num_elements]
+    'args' : (L, b, num_elements, volume),
 }
 
-result = minimize(beam_model, h0, args=[E, L, b, num_elements], constraints=constraint_dict)
+bounds = Bounds(0.01, 10.)
+result = minimize(beam_model, h, tol=1e-9, bounds=bounds, args=(E, L, b, num_elements), constraints=constraint_dict)
 
 print(result.x)

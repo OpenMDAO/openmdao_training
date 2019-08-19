@@ -4,12 +4,13 @@ import numpy as np
 from scipy.sparse import coo_matrix
 from scipy.sparse.linalg import splu
 from scipy.optimize import minimize, Bounds
-from icecream import ic
 
 
 def assemble_CSC_K(K_local):
     """
     Assemble the stiffness matrix in sparse CSC format.
+    This takes in the local stiffness matrices and assembles a full
+    stiffness matrix of all the elements.
 
     Returns
     -------
@@ -63,18 +64,23 @@ def assemble_CSC_K(K_local):
     n_K = 2 * num_nodes + 2
     return coo_matrix((data, (rows, cols)), shape=(n_K, n_K)).tocsc()
 
-
-
 def beam_model(h, E, L, b, num_elements):
+    """
+    This is the main function that evaluates the performance of a beam model.
+
+    It takes in data for the beam, applies a load, computes the
+    displacements, and returns the compliance of the structure.
+    """
     num_nodes = num_elements + 1
 
+    # Create force vector
     force_vector = np.zeros(2 * num_nodes)
     force_vector[-2] = -1.
 
-    # I_comp = MomentOfInertiaComp(num_elements=num_elements, b=b)
+    # Compute moment of inertia
     I = 1./12. * b * h ** 3
 
-    # comp = LocalStiffnessMatrixComp(num_elements=num_elements, E=E, L=L)
+    # Compute local stiffness matrices
     L0 = L / num_elements
     coeffs = np.empty((4, 4))
     coeffs[0, :] = [12, 6 * L0, -12, 6 * L0]
@@ -91,32 +97,31 @@ def beam_model(h, E, L, b, num_elements):
     for ind in range(num_elements):
         K_local[ind, :, :] = mtx[ind, :, :, ind] * I[ind]
 
-    # comp = StatesComp(num_elements=num_elements, force_vector=force_vector)
+    # Solve linear system to obtain displacements
     force_vector = np.concatenate([force_vector, np.zeros(2)])
 
     K = assemble_CSC_K(K_local)
     lu = splu(K)
 
-    d = lu.solve(force_vector)
+    displacements = lu.solve(force_vector)
 
-    displacements = d[:]
-
-    # comp = ComplianceComp(num_elements=num_elements, force_vector=force_vector)
+    # Compute and return the compliance of the beam
     compliance = np.dot(force_vector, displacements)
 
     return compliance
 
-    # self.add_design_var('inputs_comp.h', lower=1e-2, upper=10.)
-    # self.add_objective('compliance_comp.compliance')
-
 def volume_function(h, L, b, num_elements, req_volume):
-    L0 = L / num_elements
+    """
+    This function computes the volume of a beam structure used for a
+    constraint during the optimization process.
+    """
 
+    L0 = L / num_elements
     volume_diff = req_volume - np.sum(h * b * L0)
 
     return volume_diff
 
-num_elements = 15
+num_elements = 50
 E = 1.
 L = 1.
 b = 0.1
@@ -130,7 +135,7 @@ constraint_dict = {
 }
 
 bounds = Bounds(0.01, 10.)
-result = minimize(beam_model, h, tol=1e-9, bounds=bounds, args=(E, L, b, num_elements), constraints=constraint_dict)
+result = minimize(beam_model, h, tol=1e-9, bounds=bounds, args=(E, L, b, num_elements), constraints=constraint_dict, options={'maxiter' : 500})
 
 print('Optimal element height distribution:')
 print(result.x)

@@ -1,6 +1,5 @@
 from __future__ import print_function, division, absolute_import
 
-import numpy as np
 import openmdao.api as om
 from openmdao.test_suite.test_examples.beam_optimization.beam_group import BeamGroup
 
@@ -10,7 +9,7 @@ L = 1.
 b = 0.1
 volume = 0.01
 
-num_elements = 15
+num_elements = 50
 
 prob = om.Problem(model=BeamGroup(E=E, L=L, b=b, volume=volume, num_elements=num_elements))
 

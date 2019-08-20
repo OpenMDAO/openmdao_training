@@ -14,7 +14,6 @@ class FEMBeam(om.ExternalCodeComp):
         E = self.options['E']
         L = self.options['L']
         b = self.options['b']
-        volume = self.options['volume']
         num_elements = self.options['num_elements']
         num_nodes = num_elements + 1
 
@@ -46,7 +45,6 @@ class FEMBeam(om.ExternalCodeComp):
                 'E = {}'.format(E), 
                 'L = {}'.format(L),
                 'b = {}'.format(b), 
-                'volume = {}'.format(volume), 
                 'h = np.array({})'.format(h.tolist())
             ]
 

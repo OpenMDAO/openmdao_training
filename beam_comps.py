@@ -183,6 +183,8 @@ class FEM(om.ImplicitComponent):
 
             j += 12
 
+        # this implements the clamped boundary condition on the left side of the beam
+        # using a weak formulation for the BC
         data[-4:] = 1.0
         rows[-4] = 2 * num_nodes
         rows[-3] = 2 * num_nodes + 1

@@ -67,10 +67,9 @@ class BeamGroup(om.Group):
             'volume_comp.h')
 
         # connection for: FEM -> compliance
-        # this one is tricky, because you don't want the full state vector
-        # you just want the first half that has the displacements 
-        # (not the rotations from the second half)
-        # so we use the src_indices argument to pull out part of the vector
+        # this one is tricky, because you just want the states from the nodes, 
+        # but not the last 2 which relate to the clamped boundary condition on the left
+
         self.connect(
             'FEM.u',
             'compliance_comp.displacements', src_indices=np.arange(2*num_nodes))

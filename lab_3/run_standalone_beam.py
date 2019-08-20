@@ -66,14 +66,29 @@ class FEMBeam(om.ExternalCodeComp):
 
 if __name__ == "__main__": 
 
+    NUM_ELEMENTS = 50
+
     p = om.Problem()
 
-    p.model = FEMBeam(E=1, L=1, b=0.1, num_elements=50)
+    dvs = p.model.add_subsystem('dvs', om.IndepVarComp(), promotes=['*'])
+    dvs.add_output('h', val=np.ones(NUM_ELEMENTS)*1.0) 
+    p.model.add_subsystem('FEM', FEMBeam(E=1, L=1, b=0.1, 
+                                         num_elements=NUM_ELEMENTS),
+                          promotes_inputs=['h'], 
+                          promotes_outputs=['compliance', 'volume'])
+
+
+    p.driver = om.ScipyOptimizeDriver()
+    p.model.add_design_var('h', lower=0.01, upper=10.0)
+    p.model.add_objective('compliance')
+    p.model.add_constraint('volume', lower=0.1)
+
+    p.model.approx_totals(method='fd', step=1e-3, step_calc='abs')
 
     p.setup()
 
-    p.run_model()
+    p.run_driver()
 
-    p.model.list_outputs()
+    p.model.list_outputs(print_arrays=True)
 
 

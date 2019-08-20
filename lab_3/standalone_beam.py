@@ -170,6 +170,7 @@ if __name__ == "__main__":
         sys.argv.append('solve')
 
     if sys.argv[1] == "solve": 
+        print('solve call')
 
         ################################################
         # simple run script that reads inputs from 
@@ -197,6 +198,7 @@ if __name__ == "__main__":
             f.write('volume = {}'.format(volume))
 
     elif sys.argv[1] == "apply": 
+        print('apply call')
 
         # this will pull all the inputs into the global namespace
         with open('input.txt', 'r') as f: 

@@ -79,11 +79,13 @@ if __name__ == "__main__":
 
 
     p.driver = om.ScipyOptimizeDriver()
+    p.driver.options['tol'] = 1e-4
+    p.driver.options['disp'] = True
     p.model.add_design_var('h', lower=0.01, upper=10.0)
     p.model.add_objective('compliance')
     p.model.add_constraint('volume', equals=0.01)
 
-    p.model.approx_totals(method='fd', step=1e-2, step_calc='abs')
+    p.model.approx_totals(method='fd', step=1e-4, step_calc='abs')
 
     p.setup()
 

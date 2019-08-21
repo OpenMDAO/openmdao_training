@@ -102,12 +102,12 @@ class ElecRangeGroup(om.Group):
         # The ExecComp lets you define an ad-hoc component without having to make a class
         self.add_subsystem('oew', om.ExecComp('W_empty=0.6*TOW',
                                               W_empty={'value':3500, 'units':'lbm'},
-                                              TOW={'value':6000,'units':'lbm'}), 
+                                              TOW={'value':6000,'units':'lbm'}),
                                               promotes_outputs=['W_empty'])
 
-        self.add_subsystem('batterywt', BatteryWeight(), 
-                           promotes_inputs=['LoverD','eta*','spec_energy'], 
-                           promotes_outputs=['*'])        
+        self.add_subsystem('batterywt', BatteryWeight(),
+                           promotes_inputs=['LoverD','eta*','spec_energy'],
+                           promotes_outputs=['*'])
         self.connect('range_desired','batterywt.range_desired')
         # self.add_subsystem('tow' ,WeightBuild(), promotes_inputs=['W_*'])
         self.add_subsystem('tow' ,WeightBuildImplicit(), promotes_inputs=['W_*'])
@@ -139,7 +139,7 @@ if __name__ == "__main__":
 
     elif solver_flag == 'broyden':
         prob.model.nonlinear_solver=om.BroydenSolver(iprint=2)
-        # TODO: Try using broyden with and without a computed jacobian. What happens? 
+        # TODO: Try using broyden with and without a computed jacobian. What happens?
         prob.model.nonlinear_solver.options['compute_jacobian'] = True
         prob.model.nonlinear_solver.options['maxiter'] = 100
         # these options control how tightly the solver converges the system
@@ -166,20 +166,18 @@ if __name__ == "__main__":
         prob.model.nonlinear_solver.options['atol'] = 1e-8
         prob.model.nonlinear_solver.options['rtol'] = 1e-8
 
-    else: 
+    else:
         raise ValueError("bad solver selection!")
 
     prob.setup()
     ### If using the Newton solver you should generally check your partial derivatives
     ### before you run the model. It won't converge if you made a mistake.
     # prob.check_partials(compact_print=True)
-    
+
     prob.run_model()
-    
+
     ### If you want to list all inputs and outputs, uncomment the following
     # prob.model.list_inputs(units=True)
     # prob.model.list_outputs(units=True, residuals=True)
     print('Takeoff weight: ')
     print(str(prob['tow.TOW']) + ' lbs')
-
-

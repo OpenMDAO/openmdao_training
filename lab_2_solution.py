@@ -3,9 +3,9 @@ import numpy as np
 
 import openmdao.api as om
 
-# all of these components have already been created for you, 
+# all of these components have already been created for you,
 # but look in beam_comp.py if you're curious to see how
-from beam_comps import (MomentOfInertiaComp, LocalStiffnessMatrixComp, FEM, 
+from beam_comps import (MomentOfInertiaComp, LocalStiffnessMatrixComp, FEM,
                         ComplianceComp, VolumeComp)
 
 
@@ -40,7 +40,7 @@ class BeamGroup(om.Group):
         comp = LocalStiffnessMatrixComp(num_elements=num_elements, E=E, L=L)
         self.add_subsystem('local_stiffness_matrix_comp', comp)
 
-        comp = FEM(num_elements=num_elements, 
+        comp = FEM(num_elements=num_elements,
                   force_vector=force_vector)
         self.add_subsystem('FEM', comp)
 
@@ -61,13 +61,13 @@ class BeamGroup(om.Group):
         self.connect(
             'local_stiffness_matrix_comp.K_local',
             'FEM.K_local')
-        
+
         self.connect(
             'inputs_comp.h',
             'volume_comp.h')
 
         # connection for: FEM -> compliance
-        # this one is tricky, because you just want the states from the nodes, 
+        # this one is tricky, because you just want the states from the nodes,
         # but not the last 2 which relate to the clamped boundary condition on the left
 
         self.connect(
@@ -79,7 +79,7 @@ class BeamGroup(om.Group):
         self.add_constraint('volume_comp.volume', equals=volume)
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
 
     import time
 

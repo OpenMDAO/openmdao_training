@@ -6,33 +6,33 @@ import openmdao.api as om
 
 
 class BatteryWeight(om.ExplicitComponent):
-    """Compute the weight left over for batteries at TOW
+    """Compute the weight left over for batteries at TOW.
        You will need to complete this component"""
 
     def setup(self):
-        # define the following inputs: 
+        # TODO: define the following inputs:
         # W_payload 800 lbm
-        # W_empty 5800 lbm 
+        # W_empty 5800 lbm
         # TOW 12000 lbm
         # replace the <bracketed> placeholders including the brackets
         # do this for each input (3 calls)
         self.add_input(<name>, <default value>, units=<unit string>)
 
-        # TODO define the following outputs: 
+        # TODO: define the following outputs:
         # W_battery, 1000 lbm
         #
         self.add_output(<name>, <default value>, units=<unit string>)
 
-        # TODO declare generic finite difference partials (wildcards)
+        # TODO: declare generic finite difference partials (wildcards)
         self.declare_partials(<of name>, <wrt name>, method='fd')
 
     def compute(self, inputs, outputs):
-        # implement the calculation W_battery = TOW - W_payload - W_empty
+        # TODO: implement the calculation W_battery = TOW - W_payload - W_empty
         outputs[''] = inputs[''] .....
 
 class BreguetRange(om.ExplicitComponent):
-    """Compute the Breguet range for an electric aircraft
-       This example class is pre-filled with the correct code"""
+    """Compute the Breguet range for an electric aircraft.
+       This example component is pre-filled with the correct code."""
 
     def initialize(self):
         self.options.declare('g', default=9.81) # options do not have units - careful!
@@ -81,7 +81,7 @@ class ElecRangeGroup(om.Group):
 
         self.add_subsystem('batterywt', BatteryWeight())
         self.add_subsystem('breguet', BreguetRange())
-        # TODO finish these connections yourself with self.connect() or promotions
+        # TODO: finish these connections yourself with self.connect() or promotions
         # self.connect(<output_var>, <input_var>)
         # self.add_subsystems(..., promotes_inputs=['*'], promotes_outputs=['*'])
         # for this exercise we assume TOW = MTOW (max range at current payload)
@@ -95,8 +95,3 @@ if __name__ == "__main__":
     prob.run_model()
     print('Computed max range: ')
     print(str(prob['breguet.range']) + ' nautical miles')
-
-
-
-
-

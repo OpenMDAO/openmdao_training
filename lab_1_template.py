@@ -102,7 +102,7 @@ class ElecRangeGroup(om.Group):
         # TODO change the empty weight fraction from 0.6 to 0.55
         self.add_subsystem('oew', om.ExecComp('W_empty=0.6*TOW',
                                               W_empty={'value':3500, 'units':'lbm'},
-                                              TOW={'value':6000,'units':'lbm'}), 
+                                              TOW={'value':6000,'units':'lbm'}),
                                               promotes_outputs=['W_empty'])
         self.add_subsystem('batterywt', BatteryWeight(), promotes_inputs=['LoverD','eta*','spec_energy'],promotes_outputs=['W_battery'])
         self.connect('range_desired','batterywt.range_desired')
@@ -119,9 +119,9 @@ if __name__ == "__main__":
 
     # pick a solver: 'newton', 'broyden', 'nlbgs', or 'nlbjac'
     # must define a nonlinear solver since this system has a cycle
-
     # TODO experiment with newton and nlbgs for both systems
     solver_flag = 'nlbgs'
+
     if solver_flag == 'newton':
         prob.model.nonlinear_solver=om.NewtonSolver(iprint=2)
         # solve_subsystems should almost always be turned on
@@ -138,7 +138,7 @@ if __name__ == "__main__":
 
     elif solver_flag == 'broyden':
         prob.model.nonlinear_solver=om.BroydenSolver(iprint=2)
-        # TODO: Try using broyden with and without a computed jacobian. What happens? 
+        # TODO: Try using broyden with and without a computed jacobian. What happens?
         prob.model.nonlinear_solver.options['compute_jacobian'] = True
         prob.model.nonlinear_solver.options['maxiter'] = 100
         # these options control how tightly the solver converges the system
@@ -179,5 +179,3 @@ if __name__ == "__main__":
 
     print('Takeoff weight: ')
     print(str(prob['tow.TOW']) + ' lbs')
-
-

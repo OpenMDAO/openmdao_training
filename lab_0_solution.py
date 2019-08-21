@@ -10,9 +10,9 @@ class BatteryWeight(om.ExplicitComponent):
        You will need to complete this component"""
 
     def setup(self):
-        # define the following inputs: 
+        # define the following inputs:
         # W_payload 800 lbm
-        # W_empty 5800 lbm 
+        # W_empty 5800 lbm
         # TOW 12000 lbm
         # replace the <bracketed> placeholders including the brackets
         # do this for each input (3 calls)
@@ -79,10 +79,10 @@ class ElecRangeGroup(om.Group):
 
         # add your disciplinary models to the group
 
-        self.add_subsystem('batterywt', BatteryWeight(), 
+        self.add_subsystem('batterywt', BatteryWeight(),
                             promotes_inputs=['W_payload', 'W_empty', 'MTOW'])
-        self.add_subsystem('breguet', BreguetRange(), 
-                            promotes_inputs=['LoverD', 'eta_electric', 'spec_energy', 
+        self.add_subsystem('breguet', BreguetRange(),
+                            promotes_inputs=['LoverD', 'eta_electric', 'spec_energy',
                                              'eta_prop'])
 
         self.connect('batterywt.W_battery', 'breguet.W_battery')
@@ -99,8 +99,3 @@ if __name__ == "__main__":
     prob.run_model()
     print('Computed max range: ')
     print(str(prob['breguet.range']) + ' nautical miles')
-
-
-
-
-

@@ -2,7 +2,7 @@ import numpy as np
 
 import openmdao.api as om
 
-class FEMBeam(om.ExternalCodeComp):
+class FEMBeam(om.ExternalCodeComp): 
 
     def initialize(self):
         self.options.declare('E')
@@ -10,7 +10,7 @@ class FEMBeam(om.ExternalCodeComp):
         self.options.declare('b')
         self.options.declare('num_elements', int)
 
-    def setup(self):
+    def setup(self): 
         E = self.options['E']
         L = self.options['L']
         b = self.options['b']
@@ -21,7 +21,7 @@ class FEMBeam(om.ExternalCodeComp):
         force_vector[-2] = -1.
 
         self.add_input('h', shape=num_elements)
-        self.add_output('compliance', shape=1)
+        self.add_output('compliance', shape=1)        
         self.add_output('volume', shape=1)
 
         # providing these is optional; the component will verify that any input
@@ -39,12 +39,12 @@ class FEMBeam(om.ExternalCodeComp):
 
         h = inputs['h']
 
-        with open('input.txt', 'w') as f:
+        with open('input.txt', 'w') as f: 
             data = [
-                'num_elements = {}'.format(num_elements),
-                'E = {}'.format(E),
+                'num_elements = {}'.format(num_elements), 
+                'E = {}'.format(E), 
                 'L = {}'.format(L),
-                'b = {}'.format(b),
+                'b = {}'.format(b), 
                 'h = np.array({})'.format(h.tolist())
             ]
 
@@ -53,10 +53,10 @@ class FEMBeam(om.ExternalCodeComp):
         # method from base class to execute the code with the given command
         super(FEMBeam, self).compute(inputs, outputs)
 
-        with open('output.txt', 'r') as f:
+        with open('output.txt', 'r') as f: 
             data = {}
             # parses the output and puts the variables into the data dictionary
-            exec(f.read(), {}, data)
+            exec(f.read(), {}, data) 
 
         outputs['compliance'] = data['compliance']
         outputs['volume'] = data['volume']
@@ -64,17 +64,17 @@ class FEMBeam(om.ExternalCodeComp):
 
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
 
     NUM_ELEMENTS = 5
 
     p = om.Problem()
 
     dvs = p.model.add_subsystem('dvs', om.IndepVarComp(), promotes=['*'])
-    dvs.add_output('h', val=np.ones(NUM_ELEMENTS)*1.0)
-    p.model.add_subsystem('FEM', FEMBeam(E=1, L=1, b=0.1,
+    dvs.add_output('h', val=np.ones(NUM_ELEMENTS)*1.0) 
+    p.model.add_subsystem('FEM', FEMBeam(E=1, L=1, b=0.1, 
                                          num_elements=NUM_ELEMENTS),
-                          promotes_inputs=['h'],
+                          promotes_inputs=['h'], 
                           promotes_outputs=['compliance', 'volume'])
 
 
@@ -94,3 +94,4 @@ if __name__ == "__main__":
     p.run_driver()
 
     p.model.list_outputs(print_arrays=True)
+

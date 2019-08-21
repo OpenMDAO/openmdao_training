@@ -197,13 +197,14 @@ if __name__ == "__main__":
             f.write('volume = {}'.format(volume))
 
     elif sys.argv[1] == "apply": 
-        print('apply call')
 
         # this will pull all the inputs into the global namespace
         with open('input.txt', 'r') as f: 
             inp = f.read()
             exec(inp)
             # h, E, L, b, num_elements, and u, c, v are now assigned
+
+        print('apply call', h, u, compliance, volume)
 
         u_residuals, force_vector = beam_FEM_residuals(h, E, L, b, num_elements, u)
         c_residual = compliance - compliance_function(force_vector, u)

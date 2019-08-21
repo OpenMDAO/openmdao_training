@@ -2,6 +2,11 @@ import numpy as np
 
 import openmdao.api as om
 
+def fmt_data(data): 
+    """helper to format array data with lots of sig figs"""     
+    to_str = ['{:10.16f}'.format(n) for n in data]
+    return '[{}]'.format(','.join(to_str))
+
 class FEMBeam(om.ExternalCodeImplicitComp): 
 
     def initialize(self):
@@ -35,6 +40,19 @@ class FEMBeam(om.ExternalCodeImplicitComp):
         self.options['command_apply'] = ['python', 'standalone_beam.py', 'apply']
 
 
+        self.declare_partials('u', '*', method='fd', step=1e-4, step_calc='abs')
+
+
+        self.declare_partials('compliance', ['h', 'u'], method='fd', step=1e-4, step_calc='abs')
+        # if we look in the wrapper, we can see that this deriv is analytically 1 
+        self.declare_partials('compliance', 'compliance', val=1) 
+
+        # note: we know there is no derivative with respect to displacements, so we don't declare it
+        self.declare_partials('volume', 'h', method='fd', step=1e-4, step_calc='abs')
+        # if we look in the wrapper, we can see that this deriv is analytically 1 
+        self.declare_partials('volume', 'volume', val=1)
+
+
     def solve_nonlinear(self, inputs, outputs):
         E = self.options['E']
         L = self.options['L']
@@ -49,7 +67,7 @@ class FEMBeam(om.ExternalCodeImplicitComp):
                 'E = {}'.format(E), 
                 'L = {}'.format(L),
                 'b = {}'.format(b), 
-                'h = np.array({})'.format(h.tolist())
+                'h = np.array({})'.format(fmt_data(h))
             ]
 
             f.write("\n".join(data))
@@ -85,8 +103,8 @@ class FEMBeam(om.ExternalCodeImplicitComp):
                 'E = {}'.format(E), 
                 'L = {}'.format(L),
                 'b = {}'.format(b), 
-                'h = np.array({})'.format(h.tolist()),
-                'u = np.array({})'.format(u.tolist()),
+                'h = np.array({})'.format(fmt_data(h)),
+                'u = np.array({})'.format(fmt_data(u)),
                 'compliance = {}'.format(compliance), 
                 'volume = {}'.format(volume),
             ]
@@ -102,8 +120,6 @@ class FEMBeam(om.ExternalCodeImplicitComp):
             # parses the output and puts the variables into the data dictionary
             exec(f.read(), {}, data) 
 
-        print('data', data.keys())
-
         residuals['u'] = data['u_residuals']
         residuals['compliance'] = data['c_residual']
         residuals['volume'] = data['v_residual']
@@ -112,15 +128,35 @@ class FEMBeam(om.ExternalCodeImplicitComp):
 
 if __name__ == "__main__": 
 
+    NUM_ELEMENTS = 5
+
     p = om.Problem()
 
-    p.model = FEMBeam(E=1, L=1, b=0.1, num_elements=50)
+    dvs = p.model.add_subsystem('dvs', om.IndepVarComp(), promotes=['*'])
+    dvs.add_output('h', val=np.ones(NUM_ELEMENTS)*1.0) 
+    p.model.add_subsystem('FEM', FEMBeam(E=1, L=1, b=0.1, 
+                                         num_elements=NUM_ELEMENTS),
+                          promotes_inputs=['h'], 
+                          promotes_outputs=['compliance', 'volume'])
+
+
+    p.driver = om.ScipyOptimizeDriver()
+    p.driver.options['tol'] = 1e-4
+    p.driver.options['disp'] = True
+    p.model.add_design_var('h', lower=0.01, upper=10.0)
+    p.model.add_objective('compliance')
+    p.model.add_constraint('volume', equals=0.01)
+
+    # p.model.approx_totals(method='fd', step=1e-4, step_calc='abs')
+
+    p.model.linear_solver = om.DirectSolver()
 
     p.setup()
 
-    p.run_model()
-    p.model.run_apply_nonlinear()
+    # p['h'] = [0.14007896, 0.12362061, 0.1046475 , 0.08152954, 0.05012339]
 
-    p.model.list_outputs(residuals=True)
+    p.run_driver()
+
+    p.model.list_outputs(print_arrays=True)
 
 

@@ -5,6 +5,12 @@ from scipy.sparse import coo_matrix
 from scipy.sparse.linalg import splu
 from scipy.optimize import minimize, Bounds
 
+def fmt_data(data): 
+    """helper to format array data with lots of sig figs"""     
+    to_str = ['{:10.16f}'.format(n) for n in data]
+    return '[{}]'.format(','.join(to_str))
+
+
 
 def assemble_CSC_K(K_local, num_elements):
     """
@@ -151,16 +157,7 @@ def volume_function(h, L, b, num_elements):
     L0 = L / num_elements
     return np.sum(h * b * L0)
 
-def volume_constraint(h, L, b, num_elements, req_volume):
-    """
-    Computes the actual optimization constraint required by scipy. 
-    This won't be used by the OpenMDAO wrapper.
-    """
-    vol = volume_function(h, L, b, num_elements)
 
-    volume_diff = req_volume - volume_function(h, L, b, num_elements)
-
-    return volume_diff
 
 if __name__ == "__main__": 
 
@@ -170,7 +167,6 @@ if __name__ == "__main__":
         sys.argv.append('solve')
 
     if sys.argv[1] == "solve": 
-        print('solve call')
 
         ################################################
         # simple run script that reads inputs from 
@@ -188,12 +184,15 @@ if __name__ == "__main__":
             exec(inp)
             # h, E, L, b, num_elements are now assigned
 
+        print('solve call', h)
+
+
         u, force_vector = beam_model(h, E, L, b, num_elements)
         compliance = compliance_function(force_vector, u)
         volume = volume_function(h, L, b, num_elements)
 
         with open('output.txt', 'w') as f: 
-            f.write('u = {}\n'.format(u.tolist()))
+            f.write('u = {}\n'.format(fmt_data(u)))
             f.write('compliance = {}\n'.format(compliance))
             f.write('volume = {}'.format(volume))
 
@@ -221,7 +220,27 @@ if __name__ == "__main__":
         #run an optimization using FD and scipy 
         ##############################################
 
-        num_elements = 50
+        def compliance_objective(h, E, L, b, num_elements): 
+            """
+            Wraps the FEM in a function that matches what scipy expects
+            """
+
+            u, force_vector  = beam_model(h, E, L, b, num_elements)
+            return compliance_function(force_vector, u)
+
+
+        def volume_constraint(h, L, b, num_elements, req_volume):
+            """
+            Computes the actual optimization constraint required by scipy. 
+            This won't be used by the OpenMDAO wrapper.
+            """
+            vol = volume_function(h, L, b, num_elements)
+
+            volume_diff = req_volume - volume_function(h, L, b, num_elements)
+
+            return volume_diff
+
+        num_elements = 5
         E = 1.
         L = 1.
         b = 0.1
@@ -235,7 +254,11 @@ if __name__ == "__main__":
         }
 
         bounds = Bounds(0.01, 10.)
-        result = minimize(beam_model, h, tol=1e-9, bounds=bounds, args=(E, L, b, num_elements), constraints=constraint_dict, options={'maxiter' : 500})
+        result = minimize(compliance_objective, h, tol=1e-9, bounds=bounds, 
+                          args=(E, L, b, num_elements), 
+                          constraints=constraint_dict, 
+                          options={'maxiter' : 500})
 
         print('Optimal element height distribution:')
-        print(result.x)
+        print(repr(result.x))
+        print(result.fun)

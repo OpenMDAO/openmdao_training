@@ -88,7 +88,7 @@ if __name__ == "__main__":
     b = 0.1
     volume = 0.01
 
-    num_elements = 50
+    num_elements = 5
 
     prob = om.Problem(model=BeamGroup(E=E, L=L, b=b, volume=volume, num_elements=num_elements))
 

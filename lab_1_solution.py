@@ -123,7 +123,7 @@ if __name__ == "__main__":
     # pick a solver: 'newton', 'broyden', 'nlbgs', or 'nlbjac'
     # must define a nonlinear solver since this system has a cycle
 
-    solver_flag = 'nlbgs'
+    solver_flag = 'newton'
 
     if solver_flag == 'newton':
         prob.model.nonlinear_solver=om.NewtonSolver(iprint=2)

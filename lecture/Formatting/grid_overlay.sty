@@ -1,0 +1,15 @@
+\setbeamertemplate{background}{\tikz[overlay, remember picture, help lines]{
+    \foreach \x in {0,...,15} \path (current page.south west) +(\x,6.75) node {\small$\x$};
+    \foreach \y in {0,...,7} \path (current page.south west) +(15.5,\y) node {\small$\y$};
+    \foreach \x in {0,0.5,...,15.5} \draw (current page.south west) ++(\x,0) -- +(0,6.6);
+    \foreach \y in {0,0.5,...,7} \draw (current page.south west) ++(0,\y) -- +(15.5,0);
+  }
+}
+
+% \setbeamertemplate{background}{\tikz[overlay, remember picture, help lines]{
+%     \foreach \x in {0,...,15} \path (current page.south west) +(\x,7.25) node {\small$\x$};
+%     \foreach \y in {0,...,7} \path (current page.south west) +(15.5,\y) node {\small$\y$};
+%     \foreach \x in {0,0.5,...,15.5} \draw (current page.south west) ++(\x,0) -- +(0,7.25);
+%     \foreach \y in {0,0.5,...,7.5} \draw (current page.south west) ++(0,\y) -- +(15.5,0);
+%   }
+% }

@@ -264,7 +264,8 @@
 
     \column{0.5 \textwidth}
         \begin{tikzpicture}[overlay]
-            \draw (2.9, -2) node [inner sep=0] {\uncover<1->{\includegraphics[scale=0.2]{images/arch1.png}};}
+            % \draw (2.9, -2) node [inner sep=0] {\uncover<1->{\includegraphics[scale=0.2]{images/arch1.png};}};
+            \draw (2.9, -2) node [inner sep=0] {\includegraphics[scale=0.2]{images/arch1.png}};
             \draw [blue, ultra thick] (4.8,-2.7) circle (0.65cm);
             \draw[blue, very thick] (-2,1.3) -- (4.2, -2.5);
         \end{tikzpicture}
@@ -1328,7 +1329,7 @@
 \begin{frame}{Optimization with and without analytic derivatives}
 
     \begin{itemize}
-        \item High level introduction to different methods of computing derivatives
+        \item High level introduction to different methods of computing derivatives
         \vspace{0.5cm}
         \item Lab 2: Optimization of a FEM for a cantilever beam
     \end{itemize}
@@ -1379,13 +1380,15 @@
     \begin{columns}
         \column[T]{0.5\textwidth}
             \small{
-            $\displaystyle{\frac{\partial F}{\partial x_{j}} = \frac{F(x+xe_{j}h) - F(x)}{h} + \theta (h)}$
+            \begin{equation*}
+                \frac{\partial F}{\partial x_{j}} = \frac{F(x+xe_{j}h) - F(x)}{h} + \theta (h)
+            \end{equation*}
         
             \vspace{1cm}
         
             f(x+h)      \hspace{.25cm}      + 1.2345678901234\textcolor{red}{31}\\
             f(x)        \hspace{.75cm}      + 1.234567890123456\\
-            \Delta f    \hspace{1cm}        - 0.000000000000025
+            $\Delta f$    \hspace{1cm}        - 0.000000000000025
             }
         
         \column[T]{0.5\textwidth}
@@ -1395,8 +1398,8 @@
                 \tikzstyle{blueline} = [line, blue, linewidth = 0.75pt]
                 \tikzstyle{redline} = [line, red, linewidth = 0.75pt]
                 \tikzstyle{text_box} = [rectangle, minimum width=1cm, minimum height=1cm, text justified, fill= white!50]
-                
-                \node(center) [circle, black, draw, minimum size=0.01cm, yshift=-3.5cm];
+        
+                \node(center) [circle, black, draw, minimum size=0.01cm, yshift=-3.5cm]{};
             
             \end{tikzpicture}
         

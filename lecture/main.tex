@@ -79,55 +79,41 @@
 \end{frame}
 %---------------------------------------------------------------------
 
-\begin{frame}{*OpenMDAO is a reasonable choice for a wide array of MDAO problems}
+\begin{frame}{OpenMDAO is a reasonable choice for a wide array of MDAO problems}
     \begin{columns}
     
         \column[T]{0.5\textwidth}
             \begin{itemize}
                 \item High-fidelity aeropropulsive optimization with RANS and CEA
+                
+                \uncover<2->{
+                \item Medium-fidelity aerostructural optimization (VLM/beam)}
+                
+                \uncover<3->{
+                \item Conceptual-fidelity sizing and tradespace exploration}
             \end{itemize}
         
         \column[t]{0.5\textwidth}
             
-            \includegraphics[scale=0.25]{images/front1.png}\\
-            \textit{\tiny Gray et al, Aeropropulsive Design Optimization of a Turboelectric Boundary Layer Ingestion Propulsion System, AIAA/ISSMO Multidisciplinary Analysis and Optimization Conf., 2018}
+           \only<1>{ 
+           \includegraphics[scale=0.28]{images/front1.png}\\
+           }
+           \only<2>{
+           \includegraphics[scale=0.32]{images/span.png}
+           }
+            
+            \only<3>{
+            \includegraphics[scale=0.32]{images/rangeplot.png}
+            }
     \end{columns}
-    
-    \pause
-    
-    \begin{columns}
-        
-        \column[T]{0.5\textwidth}
-            \begin{itemize}
-                \item test
-            \end{itemize}
-        
-        \column[t]{0.5\textwidth}
-                \tikz[remember picture, overlay] \node[anchor=center] at ($(current page.center)-(-3.5,0)$) {\includegraphics[scale=0.24]{images/span.png}};
-        
-    \end{columns}
-    
 \end{frame}
+
 %---------------------------------------------------------------------
 
 \begin{frame}{OpenMDAO is a reasonable choice for a wide array of MDAO problems}
-
-    \tikz[remember picture, overlay] \node[anchor=center] at ($(current page.center)-(4.5,-1)$) {\includegraphics[scale=0.2]{images/jet1.png}};
-    
-
-    \tikz[remember picture, overlay] \node[anchor=center] at ($(current page.center)-(-1.5,-1)$) {\includegraphics[scale=0.18]{images/mesh1.png}};
-    
-
-    \tikz[remember picture, overlay] \node[anchor=center] at ($(current page.center)-(-5.5,.5)$) {\includegraphics[scale=0.13]{images/blade1.png}};
-
-    \tikz[remember picture, overlay] \node[anchor=center] at ($(current page.center)-(2.5,2)$)  {\includegraphics[scale=0.16]{images/plot1.png}};
-    \vspace{-6cm}
-    \tiny \textit{Jasa et al., 2018 AIAA Aviation} 
-    \hspace{7.7cm}
-    % \vspace{1.5cm}
-    \tiny \textit{Dykes et al., 2015, AIAA SciTech}
-    
+        \includegraphics[scale=.27]{images/combined.png}
 \end{frame}
+
 %---------------------------------------------------------------------
 
 \begin{frame}{Goals for today}

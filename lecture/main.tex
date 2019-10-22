@@ -1366,9 +1366,9 @@
     \begin{columns}
         \column[T]{0.5\textwidth}
             \small{
-            \begin{equation*}
-                \frac{\partial F}{\partial x_{j}} = \frac{F(x+xe_{j}h) - F(x)}{h} + \theta (h)
-            \end{equation*}
+           \begin{equation*}
+                {\frac{\partial F}{\partial x_{j}} = \frac{F(x+xe_{j}h) - F(x)}{h} + \theta (h)}
+           \end{equation*}
         
             \vspace{1cm}
         
@@ -1379,20 +1379,231 @@
         
         \column[T]{0.5\textwidth}
             \begin{tikzpicture}[overlay, node distance=0m and 0 cm]
-                \tikzstyle{axes} = [arrow, black, line width = 1.5pt, ->, >=stealth]
-                \tikzstyle{dotted} = [line black, line width = 1pt]
-                \tikzstyle{blueline} = [line, blue, linewidth = 0.75pt]
-                \tikzstyle{redline} = [line, red, linewidth = 0.75pt]
-                \tikzstyle{text_box} = [rectangle, minimum width=1cm, minimum height=1cm, text justified, fill= white!50]
-        
-                \node(center) [circle, black, draw, minimum size=0.01cm, yshift=-3.5cm]{};
-            
+                \tikzstyle{axes} = [black, line width = 1.5pt, ->, >=stealth]
+                \tikzstyle{dotted} = [dashed]
+                \tikzstyle{blueline} = [blue, thick]
+                \tikzstyle{redline} = [red, thick]
+                \tikzstyle{text_box} = [rectangle, minimum width=1cm, minimum height=1cm, text justified]
+                
+                % To move the image, change the 'yshift' value, and/or 'xshift'
+                \node(origin) [circle, fill, inner sep=1.5pt, yshift=-4.5cm, xshift=1cm] {};
+                \coordinate[above = 5cm of origin] (y);
+                \coordinate[right = 5cm of origin] (x);
+   
+                \draw [axes]   (origin) to (y);
+                \draw [axes]   (origin) to (x);
+                
+                % coordinates along x and y axes
+                \coordinate [above = 2.5cm of origin]   (fx);
+                \coordinate [above=0.75cm of origin]    (fxh);
+                \coordinate [right=2cm of origin]       (x_cord);
+                \coordinate [right=3.5cm of origin]     (xh);
+                \coordinate [right=3.6cm of fxh]        (fxh_xh_int);
+                
+                % intersection point of curved line
+                \node(int) [right=2cm of fx, circle, fill, inner sep=2pt] {};
+                
+                % dotted lines
+                \draw[dotted] (fx) to (int);
+                \draw[dotted] (int) to (x_cord);
+                \draw[dotted] (fxh) to (fxh_xh_int);
+                \draw[dotted] (xh) to (fxh_xh_int);
+                
+                % red line
+                \draw[redline] (fxh_xh_int) to (int);
+                
+                % blue line
+                \coordinate [below=2cm of int, xshift=0.7cm] (blue_bot);
+                \coordinate [above=2cm of int, xshift=-0.7cm] (blue_top);
+                \draw[blueline] (blue_bot) to (blue_top);
+                
+                % Curved plot
+                \coordinate [above=2cm of fx, xshift=0.5cm] (top);
+                \coordinate [right=1cm of xh, yshift=0.6cm] (bottom);
+                \draw [very thick] (top) to [out=-20,in=110] (int) to [out=290,in=180] (bottom);
+                
+                 \node(y_fx) [text_box, left of=fx, node distance=0.5cm] {\footnotesize f(x)} {};
+                 \node(y_fxh) [text_box, left of=fxh, node distance=0.75cm] {\footnotesize f(x+h)} {};
+                 \node(xx) [text_box, below of=x_cord, node distance=0.3cm] {\footnotesize x} {};
+                 \node(xxh) [text_box, below of=xh, node distance=0.3cm] {\footnotesize x+h} {};
+                 
             \end{tikzpicture}
-        
-        
     \end{columns}
     
 \end{frame}
+
+\begin{frame}{Finite difference is easy, but. . .} 
+
+\begin{columns}
+    \column[T]{0.5 \textwidth}
+        \begin{itemize}
+            \item Treats your model as a black-box
+            \item Expensive
+            \item Accuracy can be bad, especially close to the optimal point
+        \end{itemize}
+        
+        \vspace{-0.5cm}
+        
+        \begin{equation*}
+            \frac{\partial \textbf{F}}{\partial x_{j}} =\frac{ \textbf{F}(\textbf{x}+e_{j}h)-\textbf{F(x)}}{h} +\Theta (h)
+        \end{equation*}
+        
+    \column[T]{0.5 \textwidth}
+    \includegraphics[scale=0.3]{images/slide73.png}
+    
+\end{columns}
+    
+\end{frame}
+    
+    
+\begin{frame}{Friends don’t let friends finite difference across solvers!}
+\textbf{\small Seriously. Don’t do this unless you really have to.}
+
+\begin{itemize}
+    \item \small It’s expensive (make your solver tolerances really tight)
+    \item \small It’s inaccurate
+    \item \small It will probably make your optimization converge slowly!
+\end{itemize}
+
+\small Lots of papers on this topic: 
+
+\tiny {
+\begin{itemize}
+\item \textbf{E. S. Hendricks and J. S. Gray, “Pycycle: a tool for efficient optimization of gas turbine engine cycles,”Aerospace, vol. 6, iss. 87, 2019.}
+
+\item E. S. Hendricks, “A multi-level multi-design point approach for gas turbine cycle and turbine conceptual design,” PhD Thesis, 2017.
+
+\item J. S. Gray, T. A. Hearn, K. T. Moore, J. Hwang, J. Martins, and A. Ning, “Automatic Evaluation of Multidisciplinary Derivatives Using a Graph-Based Problem Formulation in OpenMDAO,” in15th AIAA/ISSMO Multidisciplinary Analysis and Optimization Conference, 2014.
+
+\item J. S. Gray, K. T. Moore, T. A. Hearn, and B. A. Naylor, “Standard Platform for Benchmarking Multidisciplinary Design Analysis and Optimization Architectures,”AIAA Journal, vol. 51, iss. 10, p. 2380–2394, 2013.
+
+\item C. Marriage and Martins, J. R. R. A. “Reconfigurable Semi-Analytic Sensitivity Methods and MDO Architectures Within the $\pi$MDO Framework”, in Proceedings of the 12th AIAA/ISSMO Multidisciplinary Analysis and Optimization Conference, Victoria, BC, 2008
+\end{itemize}
+}
+
+\end{frame}
+% ------------------------------------------
+% ------------------------------------------
+
+\begin{frame}{Complex step is more accurate than FD, but}
+    \begin{columns}
+        \column[T]{0.5 \textwidth}
+            \begin{itemize}
+                \item Treats your models as a gray-box (might require code modification
+                \item Even more expensive
+                \item some functions are tricky ...
+                    \begin{itemize}
+                        \item min(), max(), abs() can cause issues
+                    \end{itemize}
+            \end{itemize}
+        
+            \vspace{-0.5cm}
+        
+            \begin{equation*}
+                \frac{\partial \textbf{F}}{\partial x_{j}} =\frac{Im(\textbf{F}(\textbf{x}+ihe_{j}))}{h} +\Theta (h^{2})
+            \end{equation*}
+        
+        \column[T]{0.5 \textwidth}
+            \includegraphics[scale=0.27]{images/slide75.png}
+    \end{columns}
+    
+\end{frame}    
+
+
+% %---------------------------------------------------------------------%
+% %---------------------------------------------------------------------%
+
+\begin{frame}{Analytic derivatives are both fast and accurate!}
+\begin{columns}
+    \column[T]{0.5 \textwidth}
+        \includegraphics[scale=0.25]{images/slide76.png}
+        
+    \column[T]{0.5 \textwidth}
+        \vspace{2cm}
+        \begin{equation*}
+            \frac{df}{dx} = \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{\partial y_{a}} \frac{\partial y_{a}}{\partial x}
+        \end{equation*}
+\end{columns}
+    
+\end{frame}
+
+% %---------------------------------------------------------------------%
+% %---------------------------------------------------------------------%
+
+\begin{frame}{What about models with coupling?}
+\centering
+\includegraphics[scale=0.25]{images/slide77.png}
+    
+\end{frame}
+
+% %---------------------------------------------------------------------%
+% %---------------------------------------------------------------------%
+
+\begin{frame}{How do you differentiate through this convergence loop? }
+\begin{columns}
+    \column[T]{0.4 \textwidth}
+        \includegraphics[scale=0.2]{images/slide78.png}
+        
+    \column[T]{0.6 \textwidth}
+        \begin{itemize}
+            \item We'll need a nonlinear solver to converge this coupling
+            \vspace{0.5cm}
+            \item The solver loop changes the way you compute analytic derivatives
+        \end{itemize}
+\end{columns}
+
+\end{frame}
+
+% %---------------------------------------------------------------------%
+% %---------------------------------------------------------------------%
+\begin{frame}{Manually computing analytic derivatives for coupled models takes a lot of work}
+\begin{columns}
+    \column[T]{0.35 \textwidth}
+        \includegraphics[scale=0.2]{images/slide79.png}
+
+    \column[T]{0.65 \textwidth}
+       
+       \begin{equation*}
+            \frac{df}{dx} = \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{\partial y_{a}} \frac{\partial y_{a}}{\partial x} + \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{dx} + \frac{\partial y_{b}}{dx} + \frac{\partial f}{\partial y_{a}} \frac{dy_{a}}{dx}
+        \end{equation*}
+\end{columns}
+    
+\end{frame}
+
+% %---------------------------------------------------------------------%
+% %---------------------------------------------------------------------%
+
+\begin{frame}{How to compute these extra terms?}
+\begin{columns}
+    \column[T]{0.35 \textwidth}
+        \includegraphics[scale=0.2]{images/slide79.png}
+
+    \column[T]{0.65 \textwidth}
+       
+       \begin{equation*}
+            \frac{df}{dx} = \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{\partial y_{a}} \frac{\partial y_{a}}{\partial x} + \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{dx} + \frac{\partial y_{b}}{dx} + \frac{\partial f}{\partial y_{a}} \frac{dy_{a}}{dx}
+        \end{equation*}
+
+
+    \begin{tikzpicture}[overlay, node distance=0m and 0 cm]
+        \tikzstyle{red_box} = [rectangle, draw, red, very thick, minimum width=0.7cm, minimum height=1.4cm, align=center]
+        \tikzstyle{text_box} = [rectangle, minimum width=1cm, minimum height=1cm, text justified]
+     
+        \node(text) [text_box, yshift=-2.5cm, xshift=4.5cm] {\textcolor{red}{These terms will be computed using adjoints!}};
+     
+        %  to shift red boxes, move only box 1, the lines will follow
+        \node(box1) [red_box, above of=text,  node distance=3.7cm, xshift=2.2cm] {};
+        \node(box2) [red_box, right of=box1,  node distance=2cm] {};
+     
+        \draw[red, thick] (text) -- (box1);
+        \draw[red, thick] (text) -- (box2);
+\end{tikzpicture}
+\end{columns}
+    
+\end{frame}
+
+% %---------------------------------------------------------------------%
+% %---------------------------------------------------------------------%
     
     
 

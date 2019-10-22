@@ -5,7 +5,7 @@ import openmdao.api as om
 
 # all of these components have already been created for you,
 # but look in beam_comp.py if you're curious to see how
-from beam_comps import (MomentOfInertiaComp, LocalStiffnessMatrixComp, StatesComp,
+from beam_comps import (MomentOfInertiaComp, LocalStiffnessMatrixComp, FEM,
                         ComplianceComp, VolumeComp)
 
 
@@ -17,6 +17,8 @@ class BeamGroup(om.Group):
         self.options.declare('b', desc='beam thickness')
         self.options.declare('num_elements', types=int, # this will force some type checking for you
                              desc="number of segments to break beam into")
+
+        # TODO: Declare volume as an option to fix the error msg when instantiating this component
 
     def setup(self):
         E = self.options['E']
@@ -53,7 +55,7 @@ class BeamGroup(om.Group):
         # this one is tricky, because you just want the states from the nodes,
         # but not the last 2 which relate to the clamped boundary condition on the left
         self.connect(
-            'states_comp.u',
+            'FEM.u',
             'compliance_comp.displacements', src_indices=np.arange(2*num_nodes))
 
 

@@ -22,7 +22,7 @@ class ComputeLift(om.ExplicitComponent):
         # Sparse and colored partials
         arange = np.arange(nn)
         self.declare_partials('*', '*', rows=arange, cols=arange)
-        self.declare_coloring('*', method='cs', show_summary=True, show_sparsity=True)
+        self.declare_coloring('*', method='cs', show_summary=True)
         
     def compute(self, inputs, outputs):
         CL = inputs['CL']

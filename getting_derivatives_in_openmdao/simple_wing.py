@@ -16,7 +16,7 @@ class SimpleWing(ExplicitComponent):
         self.add_input('velocity', shape=nn, desc='aircraft velocity', units='m/s')
         self.add_input('S_ref', shape=nn, desc='wing area', units='m**2')
 
-        self.add_output('lift', val=np.zeros(nn), desc='aircraft Lift', units='N')
+        self.add_output('lift', val=np.zeros(nn), desc='aircraft lift', units='N')
         self.add_output('drag', val=np.zeros(nn), desc='aircraft drag', units='N')
         
         self.declare_partials('*', '*', method='cs')

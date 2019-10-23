@@ -1,14 +1,14 @@
-from openmdao.api import Problem, Group, IndepVarComp
+import openmdao.api as om
 import numpy as np
 
 from simple_wing import SimpleWing
 
 
-prob = Problem()
-prob.model = Group()
-des_vars = prob.model.add_subsystem('des_vars', IndepVarComp(), promotes=['*'])
+prob = om.Problem()
+prob.model = om.Group()
+des_vars = prob.model.add_subsystem('des_vars', om.IndepVarComp(), promotes=['*'])
 
-nn = 51
+nn = 101
 
 des_vars.add_output('velocity', 200. * np.ones(nn), units='m/s')
 des_vars.add_output('rho', 1.2 * np.ones(nn), units='kg/m**3')
@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 drag = prob['drag'] / 1000.
 lift = prob['lift'] / 1000.
 
-plt.figure(figsize=(10, 8))
+plt.figure(figsize=(7, 5))
 
 plt.plot(drag, lift)
 
@@ -39,12 +39,12 @@ y_scatter = lift[indices]
 plt.scatter(x_scatter, y_scatter, color='k', zorder=10)
 
 plt.annotate('Alpha = {:.1f} deg'.format(prob['alpha'][indices[0]]), xy=(x_scatter[0]+10., y_scatter[0]))
-plt.annotate('Alpha = {:.1f} deg'.format(prob['alpha'][indices[1]]), xy=(x_scatter[1]+15., y_scatter[1]))
-plt.annotate('Alpha = {:.1f} deg'.format(prob['alpha'][indices[2]]), xy=(x_scatter[2]-130., y_scatter[2]-200.))
-
+plt.annotate('Alpha = {:.1f} deg'.format(prob['alpha'][indices[1]]), xy=(x_scatter[1]+15., y_scatter[1]-200.))
+plt.annotate('Alpha = {:.1f} deg'.format(prob['alpha'][indices[2]]), xy=(x_scatter[2]-200., y_scatter[2]-200.))
 
 plt.xlabel('Drag, kN')
 plt.ylabel('Lift, kN')
 
 plt.tight_layout()
+# plt.show()
 plt.savefig('drag_polar.pdf')

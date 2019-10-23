@@ -48,8 +48,8 @@ class BalancedEOM(om.ImplicitComponent):
                        units='N',
                        lower=10., upper=1.e6)
                        
-                       
-        self.declare_partials('*', '*', method='fd')
+        arange = np.arange(nn)
+        self.declare_partials('*', '*', rows=arange, cols=arange)
 
     def apply_nonlinear(self, inputs, outputs, residuals):
         g = 9.80665
@@ -87,19 +87,3 @@ class BalancedEOM(om.ImplicitComponent):
         partials['thrust', 'gamma'] = mass * g * np.sin(gamma)
         
         
-    
-if __name__ == "__main__":
-
-    prob = om.Problem()
-    prob.model = BalancedEOM(num_nodes=1)
-    
-    prob.model.nonlinear_solver = om.NewtonSolver()
-    prob.model.linear_solver = om.DirectSolver()
-    
-    prob.set_solver_print(level=2)
-    
-    prob.setup(force_alloc_complex=True)
-    
-    prob.run_model()
-    
-    prob.check_partials(method='cs', step=1e-40, compact_print=True)

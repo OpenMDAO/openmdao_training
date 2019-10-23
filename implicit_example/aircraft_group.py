@@ -6,17 +6,17 @@ from balanced_eom import BalancedEOM
 from simple_wing import SimpleWing
 
 
-nn = 1
+nn = 2
 
 prob = om.Problem(model=om.Group())
 
 design_parameters = prob.model.add_subsystem('design_parameters', om.IndepVarComp(), promotes=['*'])
 
-design_parameters.add_output('mass', 250.e3 * np.ones(nn), units='kg')
-design_parameters.add_output('velocity', 250., units='m/s')
-design_parameters.add_output('gamma', 0., units='rad')
+design_parameters.add_output('mass', [250.e3, 200.e3], units='kg')
+design_parameters.add_output('velocity', [200., 250.], units='m/s')
+design_parameters.add_output('gamma', [0., 0.], units='rad')
 design_parameters.add_output('S_ref', 594720 * np.ones(nn), units='inch**2')
-design_parameters.add_output('rho', 1.2 * np.ones(nn), units='kg/m**3')
+design_parameters.add_output('rho', [1.2, 0.4], units='kg/m**3')
 
 prob.model.add_subsystem('simple_wing', SimpleWing(num_nodes=nn), promotes=['*'])
 prob.model.add_subsystem('EOM', BalancedEOM(num_nodes=nn), promotes=['*'])
@@ -35,4 +35,4 @@ prob.run_model()
 
 # prob.check_partials(method='cs', step=1e-40, compact_print=True)
 
-prob.model.list_outputs(units=True)
+prob.model.list_outputs(print_arrays=True, units=True)

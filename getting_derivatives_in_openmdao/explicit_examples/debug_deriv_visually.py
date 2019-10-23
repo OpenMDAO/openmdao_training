@@ -19,8 +19,9 @@ class ComputeLift(om.ExplicitComponent):
 
         self.add_output('lift', val=np.zeros(nn), desc='aircraft lift', units='N')
         
-        # Finite-difference or complex-step approximation
-        self.declare_partials('*', '*', method='cs')
+        # Sparse partials
+        arange = np.arange(nn)
+        self.declare_partials('*', '*', rows=arange, cols=arange)
         
     def compute(self, inputs, outputs):
         CL = inputs['CL']
@@ -30,6 +31,20 @@ class ComputeLift(om.ExplicitComponent):
         
         outputs['lift'] = 0.5 * CL * rho * velocity**2 * S_ref
         
+    def compute_partials(self, inputs, partials):
+        nn = self.options['num_nodes']
+        
+        CL = inputs['CL']
+        rho = inputs['rho']
+        velocity = inputs['velocity']
+        S_ref = inputs['S_ref']
+
+        # Sparse partials
+        partials['lift', 'CL'] = rho * velocity**2 * S_ref
+        partials['lift', 'rho'] = 0.5 * CL * velocity**2 * S_ref
+        partials['lift', 'velocity'] = CL * rho * velocity * S_ref
+        partials['lift', 'S_ref'] = 0.5 * CL * rho * velocity**2       
+
 
 if __name__ == "__main__":
     
@@ -39,8 +54,8 @@ if __name__ == "__main__":
     
     ivc = prob.model.add_subsystem('indep_var_comp', om.IndepVarComp(), promotes=['*'])
     ivc.add_output('CL', val=0.5, shape=nn, units=None)
-    ivc.add_output('rho', val=1.2, shape=nn, units='kg/m**3')
-    ivc.add_output('velocity', val=100., shape=nn, units='m/s')
+    ivc.add_output('rho', val=0.4, shape=nn, units='kg/m**3')
+    ivc.add_output('velocity', val=np.linspace(100., 200., nn), units='m/s')
     ivc.add_output('S_ref', val=8., shape=nn, units='m**2')
     
     prob.model.add_subsystem('compute_lift', ComputeLift(num_nodes=nn), promotes=['*'])
@@ -52,4 +67,6 @@ if __name__ == "__main__":
     
     print('Computed lift: {} Newtons'.format(prob['lift'][0]))
 
-    prob.check_partials(compact_print=True)
+    check_partials_data = prob.check_partials(compact_print=True)
+
+    om.partial_deriv_plot('lift', 'CL', check_partials_data)

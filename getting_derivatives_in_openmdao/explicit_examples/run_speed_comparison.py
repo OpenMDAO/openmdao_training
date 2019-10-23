@@ -8,7 +8,7 @@ import pickle
 import openmdao.api as om
 
 
-nns = [2**i for i in range(8)]
+nns = [2**i for i in range(12)]
 num_nns = len(nns)
 num_repeats = 10
 

@@ -19,7 +19,7 @@ class ComputeLift(om.ExplicitComponent):
 
         self.add_output('lift', val=np.zeros(nn), desc='aircraft lift', units='N')
         
-        # Sparse and colored partials
+        # Sparse and colored approximated partials
         arange = np.arange(nn)
         self.declare_partials('*', '*', rows=arange, cols=arange)
         self.declare_coloring('*', method='cs', show_summary=True)

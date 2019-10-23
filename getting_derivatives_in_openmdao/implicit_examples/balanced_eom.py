@@ -3,7 +3,14 @@ import numpy as np
 import openmdao.api as om
 
 
+# Acceleration due to gravity in m/s**2
+g = 9.80665
+
 class BalancedEOM(om.ImplicitComponent):
+    """
+    An implicit component to solve for the angle of attack and thrust values
+    needed to balance the forces that an aircraft experiences in steady flight.
+    """
 
     def initialize(self):
         self.options.declare('num_nodes', types=int)
@@ -51,8 +58,8 @@ class BalancedEOM(om.ImplicitComponent):
         arange = np.arange(nn)
         self.declare_partials('*', '*', rows=arange, cols=arange)
 
+    # Compute the residual values of alpha and thrust
     def apply_nonlinear(self, inputs, outputs, residuals):
-        g = 9.80665
         mass = inputs['mass']
         lift = inputs['lift']
         drag = inputs['drag']
@@ -64,8 +71,9 @@ class BalancedEOM(om.ImplicitComponent):
         residuals['alpha'] = thrust * np.cos(alpha) - drag - mass * g * np.sin(gamma)
         residuals['thrust'] = thrust * np.sin(alpha) + lift - mass * g * np.cos(gamma)
         
+    # Compute the partial derivatives of the residual equations wrt each of
+    # the inputs
     def linearize(self, inputs, outputs, partials):
-        g = 9.80665
         mass = inputs['mass']
         lift = inputs['lift']
         drag = inputs['drag']

@@ -7,7 +7,7 @@ import openmdao.api as om
 class ComputeLift(om.ExplicitComponent):
     
     def initialize(self):
-        self.options.declare('num_nodes', types=int, default=1)
+        self.options.declare('num_nodes', types=int, default=1, desc='number of analysis points')
 
     def setup(self):
         nn = self.options['num_nodes']

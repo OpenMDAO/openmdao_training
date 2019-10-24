@@ -8,9 +8,9 @@ import pickle
 import openmdao.api as om
 
 
-nns = [2**i for i in range(12)]
+nns = [2**i for i in range(13)]
 num_nns = len(nns)
-num_repeats = 10
+num_repeats = 20
 
 data = OrderedDict()
 data['Analytic Dense'] = np.zeros((num_nns, num_repeats))

@@ -1432,28 +1432,28 @@
     
 \end{frame}
 
-\begin{frame}{Finite difference is easy, but. . .} 
-
-\begin{columns}
-    \column[T]{0.5 \textwidth}
-        \begin{itemize}
-            \item Treats your model as a black-box
-            \item Expensive
-            \item Accuracy can be bad, especially close to the optimal point
-        \end{itemize}
-        
-        \vspace{-0.5cm}
-        
-        \begin{equation*}
-            \frac{\partial \textbf{F}}{\partial x_{j}} =\frac{ \textbf{F}(\textbf{x}+e_{j}h)-\textbf{F(x)}}{h} +\Theta (h)
-        \end{equation*}
-        
-    \column[T]{0.5 \textwidth}
-    \includegraphics[scale=0.3]{images/slide73.png}
-    
-\end{columns}
-    
-\end{frame}
+% \begin{frame}{Finite difference is easy, but. . .} 
+% 
+% \begin{columns}
+%     \column[T]{0.5 \textwidth}
+%         \begin{itemize}
+%             \item Treats your model as a black-box
+%             \item Expensive
+%             \item Accuracy can be bad, especially close to the optimal point
+%         \end{itemize}
+% 
+%         \vspace{-0.5cm}
+% 
+%         \begin{equation*}
+%             \frac{\partial \textbf{F}}{\partial x_{j}} =\frac{ \textbf{F}(\textbf{x}+e_{j}h)-\textbf{F(x)}}{h} +\Theta (h)
+%         \end{equation*}
+% 
+%     \column[T]{0.5 \textwidth}
+%     \includegraphics[scale=0.3]{images/slide73.png}
+% 
+% \end{columns}
+% 
+% \end{frame}
     
     
 \begin{frame}{Friends don’t let friends finite difference across solvers!}
@@ -1485,122 +1485,122 @@
 % ------------------------------------------
 % ------------------------------------------
 
-\begin{frame}{Complex step is more accurate than FD, but}
-    \begin{columns}
-        \column[T]{0.5 \textwidth}
-            \begin{itemize}
-                \item Treats your models as a gray-box (might require code modification
-                \item Even more expensive
-                \item some functions are tricky ...
-                    \begin{itemize}
-                        \item min(), max(), abs() can cause issues
-                    \end{itemize}
-            \end{itemize}
-        
-            \vspace{-0.5cm}
-        
-            \begin{equation*}
-                \frac{\partial \textbf{F}}{\partial x_{j}} =\frac{Im(\textbf{F}(\textbf{x}+ihe_{j}))}{h} +\Theta (h^{2})
-            \end{equation*}
-        
-        \column[T]{0.5 \textwidth}
-            \includegraphics[scale=0.27]{images/slide75.png}
-    \end{columns}
-    
-\end{frame}    
+% \begin{frame}{Complex step is more accurate than FD, but}
+%     \begin{columns}
+%         \column[T]{0.5 \textwidth}
+%             \begin{itemize}
+%                 \item Treats your models as a gray-box (might require code modification
+%                 \item Even more expensive
+%                 \item some functions are tricky ...
+%                     \begin{itemize}
+%                         \item min(), max(), abs() can cause issues
+%                     \end{itemize}
+%             \end{itemize}
+% 
+%             \vspace{-0.5cm}
+% 
+%             \begin{equation*}
+%                 \frac{\partial \textbf{F}}{\partial x_{j}} =\frac{Im(\textbf{F}(\textbf{x}+ihe_{j}))}{h} +\Theta (h^{2})
+%             \end{equation*}
+% 
+%         \column[T]{0.5 \textwidth}
+%             \includegraphics[scale=0.27]{images/slide75.png}
+%     \end{columns}
+% 
+% \end{frame}    
 
 
 % %---------------------------------------------------------------------%
 % %---------------------------------------------------------------------%
 
-\begin{frame}{Analytic derivatives are both fast and accurate!}
-\begin{columns}
-    \column[T]{0.5 \textwidth}
-        \includegraphics[scale=0.25]{images/slide76.png}
-        
-    \column[T]{0.5 \textwidth}
-        \vspace{2cm}
-        \begin{equation*}
-            \frac{df}{dx} = \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{\partial y_{a}} \frac{\partial y_{a}}{\partial x}
-        \end{equation*}
-\end{columns}
-    
-\end{frame}
+% \begin{frame}{Analytic derivatives are both fast and accurate!}
+% \begin{columns}
+%     \column[T]{0.5 \textwidth}
+%         \includegraphics[scale=0.25]{images/slide76.png}
+% 
+%     \column[T]{0.5 \textwidth}
+%         \vspace{2cm}
+%         \begin{equation*}
+%             \frac{df}{dx} = \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{\partial y_{a}} \frac{\partial y_{a}}{\partial x}
+%         \end{equation*}
+% \end{columns}
+% 
+% \end{frame}
 
 % %---------------------------------------------------------------------%
 % %---------------------------------------------------------------------%
 
-\begin{frame}{What about models with coupling?}
-\centering
-\includegraphics[scale=0.25]{images/slide77.png}
-    
-\end{frame}
+% \begin{frame}{What about models with coupling?}
+% \centering
+% \includegraphics[scale=0.25]{images/slide77.png}
+% 
+% \end{frame}
 
 % %---------------------------------------------------------------------%
 % %---------------------------------------------------------------------%
 
-\begin{frame}{How do you differentiate through this convergence loop? }
-\begin{columns}
-    \column[T]{0.4 \textwidth}
-        \includegraphics[scale=0.2]{images/slide78.png}
-        
-    \column[T]{0.6 \textwidth}
-        \begin{itemize}
-            \item We'll need a nonlinear solver to converge this coupling
-            \vspace{0.5cm}
-            \item The solver loop changes the way you compute analytic derivatives
-        \end{itemize}
-\end{columns}
-
-\end{frame}
-
-% %---------------------------------------------------------------------%
-% %---------------------------------------------------------------------%
-\begin{frame}{Manually computing analytic derivatives for coupled models takes a lot of work}
-\begin{columns}
-    \column[T]{0.35 \textwidth}
-        \includegraphics[scale=0.2]{images/slide79.png}
-
-    \column[T]{0.65 \textwidth}
-       
-       \begin{equation*}
-            \frac{df}{dx} = \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{\partial y_{a}} \frac{\partial y_{a}}{\partial x} + \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{dx} + \frac{\partial y_{b}}{dx} + \frac{\partial f}{\partial y_{a}} \frac{dy_{a}}{dx}
-        \end{equation*}
-\end{columns}
-    
-\end{frame}
+% \begin{frame}{How do you differentiate through this convergence loop? }
+% \begin{columns}
+%     \column[T]{0.4 \textwidth}
+%         \includegraphics[scale=0.2]{images/slide78.png}
+% 
+%     \column[T]{0.6 \textwidth}
+%         \begin{itemize}
+%             \item We'll need a nonlinear solver to converge this coupling
+%             \vspace{0.5cm}
+%             \item The solver loop changes the way you compute analytic derivatives
+%         \end{itemize}
+% \end{columns}
+% 
+% \end{frame}
 
 % %---------------------------------------------------------------------%
 % %---------------------------------------------------------------------%
+% \begin{frame}{Manually computing analytic derivatives for coupled models takes a lot of work}
+% \begin{columns}
+%     \column[T]{0.35 \textwidth}
+%         \includegraphics[scale=0.2]{images/slide79.png}
+% 
+%     \column[T]{0.65 \textwidth}
+% 
+%        \begin{equation*}
+%             \frac{df}{dx} = \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{\partial y_{a}} \frac{\partial y_{a}}{\partial x} + \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{dx} + \frac{\partial y_{b}}{dx} + \frac{\partial f}{\partial y_{a}} \frac{dy_{a}}{dx}
+%         \end{equation*}
+% \end{columns}
+% 
+% \end{frame}
 
-\begin{frame}{How to compute these extra terms?}
-\begin{columns}
-    \column[T]{0.35 \textwidth}
-        \includegraphics[scale=0.2]{images/slide79.png}
+% %---------------------------------------------------------------------%
+% %---------------------------------------------------------------------%
 
-    \column[T]{0.65 \textwidth}
-       
-       \begin{equation*}
-            \frac{df}{dx} = \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{\partial y_{a}} \frac{\partial y_{a}}{\partial x} + \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{dx} + \frac{\partial y_{b}}{dx} + \frac{\partial f}{\partial y_{a}} \frac{dy_{a}}{dx}
-        \end{equation*}
-
-
-    \begin{tikzpicture}[overlay, node distance=0m and 0 cm]
-        \tikzstyle{red_box} = [rectangle, draw, red, very thick, minimum width=0.7cm, minimum height=1.4cm, align=center]
-        \tikzstyle{text_box} = [rectangle, minimum width=1cm, minimum height=1cm, text justified]
-     
-        \node(text) [text_box, yshift=-2.5cm, xshift=4.5cm] {\textcolor{red}{These terms will be computed using adjoints!}};
-     
-        %  to shift red boxes, move only box 1, the lines will follow
-        \node(box1) [red_box, above of=text,  node distance=3.7cm, xshift=2.2cm] {};
-        \node(box2) [red_box, right of=box1,  node distance=2cm] {};
-     
-        \draw[red, thick] (text) -- (box1);
-        \draw[red, thick] (text) -- (box2);
-\end{tikzpicture}
-\end{columns}
-    
-\end{frame}
+% \begin{frame}{How to compute these extra terms?}
+% \begin{columns}
+%     \column[T]{0.35 \textwidth}
+%         \includegraphics[scale=0.2]{images/slide79.png}
+% 
+%     \column[T]{0.65 \textwidth}
+% 
+%        \begin{equation*}
+%             \frac{df}{dx} = \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{\partial y_{a}} \frac{\partial y_{a}}{\partial x} + \frac{\partial f}{\partial y_{b}} \frac{\partial y_{b}}{dx} + \frac{\partial y_{b}}{dx} + \frac{\partial f}{\partial y_{a}} \frac{dy_{a}}{dx}
+%         \end{equation*}
+% 
+% 
+%     \begin{tikzpicture}[overlay, node distance=0m and 0 cm]
+%         \tikzstyle{red_box} = [rectangle, draw, red, very thick, minimum width=0.7cm, minimum height=1.4cm, align=center]
+%         \tikzstyle{text_box} = [rectangle, minimum width=1cm, minimum height=1cm, text justified]
+% 
+%         \node(text) [text_box, yshift=-2.5cm, xshift=4.5cm] {\textcolor{red}{These terms will be computed using adjoints!}};
+% 
+%         %  to shift red boxes, move only box 1, the lines will follow
+%         \node(box1) [red_box, above of=text,  node distance=3.7cm, xshift=2.2cm] {};
+%         \node(box2) [red_box, right of=box1,  node distance=2cm] {};
+% 
+%         \draw[red, thick] (text) -- (box1);
+%         \draw[red, thick] (text) -- (box2);
+% \end{tikzpicture}
+% \end{columns}
+% 
+% \end{frame}
 
 % %---------------------------------------------------------------------%
 % %---------------------------------------------------------------------%

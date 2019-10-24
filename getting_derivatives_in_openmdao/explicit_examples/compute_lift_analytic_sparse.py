@@ -7,7 +7,7 @@ import openmdao.api as om
 class ComputeLift(om.ExplicitComponent):
     
     def initialize(self):
-        self.options.declare('num_nodes', types=int, default=1)
+        self.options.declare('num_nodes', types=int, default=1, desc='number of analysis points')
 
     def setup(self):
         nn = self.options['num_nodes']
@@ -32,8 +32,6 @@ class ComputeLift(om.ExplicitComponent):
         outputs['lift'] = 0.5 * CL * rho * velocity**2 * S_ref
         
     def compute_partials(self, inputs, partials):
-        nn = self.options['num_nodes']
-        
         CL = inputs['CL']
         rho = inputs['rho']
         velocity = inputs['velocity']

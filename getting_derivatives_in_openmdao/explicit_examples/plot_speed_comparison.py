@@ -30,4 +30,4 @@ for i_method, key in enumerate(data):
 plt.legend()
 plt.xlabel('Num nodes')
 plt.ylabel('Time to compute total derivs, secs')
-plt.savefig('timing_data.pdf')
+plt.savefig('speed_comparison.pdf')

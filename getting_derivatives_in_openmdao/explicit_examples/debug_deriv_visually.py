@@ -52,7 +52,7 @@ if __name__ == "__main__":
     
     nn = 11
     
-    ivc = prob.model.add_subsystem('indep_var_comp', om.IndepVarComp(), proe1motes=['*'])
+    ivc = prob.model.add_subsystem('indep_var_comp', om.IndepVarComp(), promotes=['*'])
     ivc.add_output('CL', val=0.5, shape=nn, units=None)
     ivc.add_output('rho', val=0.4, shape=nn, units='kg/m**3')
     ivc.add_output('velocity', val=np.linspace(100., 200., nn), units='m/s')

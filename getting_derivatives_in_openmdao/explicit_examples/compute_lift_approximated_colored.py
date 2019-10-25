@@ -34,10 +34,12 @@ class ComputeLift(om.ExplicitComponent):
         
 
 if __name__ == "__main__":
+
+    import time
     
     prob = om.Problem(model=om.Group())
     
-    nn = 11
+    nn = 11000
     
     ivc = prob.model.add_subsystem('indep_var_comp', om.IndepVarComp(), promotes=['*'])
     ivc.add_output('CL', val=0.5, shape=nn, units=None)
@@ -50,7 +52,9 @@ if __name__ == "__main__":
     prob.setup()
     prob.run_model()
     
+    start_time = time.time()
     prob.compute_totals(['lift'], ['CL', 'rho', 'velocity', 'S_ref'])
+    print('time to compute total derivatives: ', time.time()-start_time)
     
     print('Computed lift: {} Newtons'.format(prob['lift'][0]))
 

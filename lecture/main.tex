@@ -1602,9 +1602,70 @@
 % 
 % \end{frame}
 
-% %---------------------------------------------------------------------%
-% %---------------------------------------------------------------------%
+%---------------------------------------------------------------------%
+%---------------------------------------------------------------------%
+
+
+\begin{frame}{When models get really big, have fun!}
+\begin{columns}
+    \column[T]{0.6 \textwidth}
+        \includegraphics[scale=0.5]{images/slide_81.png}
     
+    \column[T]{0.4 \textwidth}
+        \begin{center}
+            
+        
+        \begin{equation*}
+            \LARGE\frac{df}{dx} = ???
+        \end{equation*}
+        \end{center}
+        Lets be honest, this is just not going to happen
+    
+\end{columns}
+    
+\end{frame}
+
+%---------------------------------------------------------------------%
+%---------------------------------------------------------------------%
+
+\begin{frame}{OpenMDAO can compute these total derivatives for you, automatically!}
+\begin{columns}
+    \column[T]{0.5 \textwidth}
+        \includegraphics[scale=0.5]{images/slide_81.png}
+    
+    \column[T]{0.5 \textwidth}
+        \begin{center}
+
+        \begin{equation*}
+            \LARGE\frac{df}{dx} = [ask OpenMDAO]
+        \end{equation*}
+       
+    \textbf{For a deep dive on the math}
+            \begin{itemize}
+                \item Martins and Hwang 2013
+                \item Hwang and Martins 2018 
+            \end{itemize}
+        \end{center}
+\end{columns}
+    
+\end{frame}
+
+%---------------------------------------------------------------------%
+%---------------------------------------------------------------------%
+
+\begin{frame}{OpenMDAO splits total derivative computation into two steps}
+\begin{columns}
+    \column[T]{0.4 \textwidth}
+        \includegraphics[scale=0.2]{images/slide76.png}
+        
+    \column[T]{0.6 \textwidth}
+        \begin{itemize}
+            \item Computing the partial derivatives for each component 
+            \item Solving a linear system for total derivatives
+        \end{itemize}
+\end{columns}
+    
+\end{frame}
     
 
 
